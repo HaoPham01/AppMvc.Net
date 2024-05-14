@@ -1,4 +1,5 @@
 using App.Services;
+using App.ExtendMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 //Add Service
 builder.Services.AddSingleton<ProductService, ProductService>();
+builder.Services.AddSingleton<PlanetService, PlanetService>();
 
 var app = builder.Build();
 
@@ -21,15 +23,24 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.AddStatusCodePage(); // Tuy bien Response loi 400 - 599
 
 app.UseRouting();
 
 app.UseAuthentication(); //xac dinh danh tinh
 app.UseAuthorization(); //xac thuc quyen truy cap
 
+app.MapAreaControllerRoute(
+    name: "product",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
+    areaName:"ProductManage"
+    
+);
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 app.MapRazorPages();
 
 app.Run();
